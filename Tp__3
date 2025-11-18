@@ -1,0 +1,125 @@
+include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Product {
+    int ID;
+    char Name[20];
+    int Price;
+} Product;
+
+typedef struct Node {
+    Product Prod;
+    struct Node *next;
+} Node;
+
+// Q1: إنشاء قائمة فارغة والتحقق من كونها فارغة
+Node* createEmptyList() {
+    return NULL;
+}
+
+int isEmpty(Node *head) {
+    return (head == NULL);
+}
+
+// Q2: إضافة منتج في بداية القائمة
+Node* insertAtBeginning(Node *head, Product newProd) {
+    Node *newNode = (Node*)malloc(sizeof(Node));
+    newNode->Prod = newProd;
+    
+    if (isEmpty(head)) {
+        newNode->next = newNode; // تشير إلى نفسها
+        head = newNode;
+    } else {
+        Node *temp = head;
+        
+        // البحث عن العقدة الأخيرة
+        while (temp->next != head) {
+            temp = temp->next;
+        }
+        
+        newNode->next = head;
+        temp->next = newNode;
+        head = newNode;
+    }
+    
+    return head;
+}
+
+// Q2: إضافة منتج في نهاية القائمة
+Node* insertAtEnd(Node *head, Product newProd) {
+    Node *newNode = (Node*)malloc(sizeof(Node));
+    newNode->Prod = newProd;
+    
+    if (isEmpty(head)) {
+        newNode->next = newNode; // تشير إلى نفسها
+        head = newNode;
+    } else {
+        Node *temp = head;
+        
+        // البحث عن العقدة الأخيرة
+        while (temp->next != head) {
+            temp = temp->next;
+        }
+        
+        newNode->next = head;
+        temp->next = newNode;
+    }
+    
+    return head;
+}
+
+// Q3: عرض جميع المنتجات مع تجنب التكرار اللانهائي
+void displayProducts(Node *head) {
+    if (isEmpty(head)) {
+        printf("The list is empty.\n");
+        return;
+    }
+    
+    Node *current = head;
+    
+    printf("Products in the circular list:\n");
+    printf("ID\tName\t\tPrice\n");
+    printf("--\t----\t\t-----\n");
+    
+    // استخدام do-while لضمان المرور على العقدة الأولى مرة واحدة على الأقل
+    do {
+        printf("%d\t%s\t\t%d\n", 
+               current->Prod.ID, 
+               current->Prod.Name, 
+               current->Prod.Price);
+        current = current->next;
+    } while (current != head); // التوقف عند العودة إلى الرأس
+    
+    printf("End of list.\n");
+}
+
+// دالة مساعدة لإنشاء منتج جديد (للتجربة)
+Product createProduct(int id, char name[], int price) {
+    Product p;
+    p.ID = id;
+    strcpy(p.Name, name);
+    p.Price = price;
+    return p;
+}
+
+// دالة رئيسية للتجربة
+int main() {
+    Node *head = createEmptyList();
+    
+    // اختبار الدوال
+    printf("Is list empty? %s\n", isEmpty(head) ? "Yes" : "No");
+    
+    // إضافة منتجات
+    head = insertAtBeginning(head, createProduct(1, "Laptop", 1200));
+    head = insertAtEnd(head, createProduct(2, "Mouse", 25));
+    head = insertAtBeginning(head, createProduct(3, "Keyboard", 80));
+    head = insertAtEnd(head, createProduct(4, "Monitor", 300));
+    
+    // عرض المنتجات
+    displayProducts(head);
+    
+    printf("Is list empty? %s\n", isEmpty(head) ? "Yes" : "No");
+    
+    return 0;
+}
